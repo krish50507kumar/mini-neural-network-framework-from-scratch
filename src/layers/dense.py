@@ -18,7 +18,8 @@ class Dense:
         limit = np.sqrt(2.0 / input_dim)
         self.W = np.random.randn(input_dim,output_dim).astype(np.float32)*limit
         if use_bias:
-            self.b = np.zeros((1,output_dim)).astype(np.float32)
+            # self.b = np.zeros((1,output_dim)).astype(np.float32)
+            self.b = np.ones((1, output_dim)).astype(np.float32)
         else:
             self.b = None
 

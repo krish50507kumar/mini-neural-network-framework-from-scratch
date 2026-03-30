@@ -30,7 +30,7 @@ layers = [
 model = NeuralNetwork(layers)
 model.complie(
     loss=MSE(),
-    optimizer=SGD(lr = 0.01)
+    optimizer=SGD(lr = 0.5)
 )
 model.train(X,y,epochs =500)
 # print("Before:", layers[0].W[0][0])
