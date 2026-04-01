@@ -8,5 +8,5 @@ class Softmax:
         self.out = stable_e/np.sum(stable_e,axis=1,keepdims=True)
         return self.out
 
-    def backward(self,dZ):
+    def backward(self,dZ,lambda_ = 0.0):
         return dZ

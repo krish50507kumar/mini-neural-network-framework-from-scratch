@@ -35,10 +35,11 @@ class Dense:
             output = output + self.b
         return output
 
-    def backward(self,dz):
+    def backward(self,dz,lambda_ = 0.0):
         """
         :param dz: np.array
         :param lr: int
+        :param lambda_: float
         :return: np.array
 
         assume:
@@ -47,6 +48,7 @@ class Dense:
         dZ = (batch, output_dim)
         """
         self.dW = np.dot(self.x.T,dz) # shape: (input_dim,output_dim)
+        self.dW += 2 * lambda_ * self.W
         self.db = np.sum(dz,axis=0,keepdims=True) if self.b is not None else None # shape: (1,output_dim)
         dX = np.dot(dz,self.W.T) # shape: (batch,input_dim)
         return dX

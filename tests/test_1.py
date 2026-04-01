@@ -38,12 +38,14 @@ model = NeuralNetwork([
 
 model.compile(
     loss=CategoricalCrossEntropy(),
-    optimizer=Adam(lr=0.01)
+    optimizer=Adam(lr=0.05)
 )
 
-model.train(X_train, y_train, epochs=200, batch_size=16)
+model.train(X_train, y_train, epochs=200, batch_size=32)
 
 y_pred = model.predict(X_test)
-
 acc = accuracy(y_pred, y_test)
 print("Test Accuracy:", acc)
+# model.save("../Models/iris_model.pkl")
+# print(y_test)
+# print(y_pred)

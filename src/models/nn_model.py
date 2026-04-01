@@ -10,9 +10,9 @@ class NeuralNetwork:
             X = layer.forward(X)
         return X
 
-    def backward(self, dZ):
+    def backward(self, dZ,lambda_ = 0.0):
         for layer in reversed(self.layers):
-            dZ = layer.backward(dZ)
+            dZ = layer.backward(dZ,lambda_)
 
     def compile(self,loss,optimizer):
         self.loss_fn = loss
@@ -20,6 +20,7 @@ class NeuralNetwork:
 
     def train(self,X,y,epochs = 10,batch_size=32):
         n_samples = X.shape[0]
+        lambda_ = 0.001
         for epoch in range(epochs):
             indices = np.random.permutation(n_samples)
             X = X[indices]
@@ -30,13 +31,13 @@ class NeuralNetwork:
                 # I pushed the input_X or train_X through my neural network and predicted y_pred i,e output of last neuron
                 y_pred = self.forward(X_batch)
                 # I now compute the loss of last neuron cause previous layer neurons need it
-                loss = self.loss_fn.forward(y_pred,y_batch)
+                loss = self.loss_fn.forward(y_pred,y_batch,lambda_=lambda_)
                 # now i compute the gradient of last neuron
                 dZ = self.loss_fn.backward(y_pred,y_batch)
                 # now we backpropagation the network and update every neuron weight and bias as per their loss
-                self.backward(dZ)
+                self.backward(dZ,lambda_)
                 self.optimizer.step(self.layers)
-                acc = accuracy(y_pred, y)
+                acc = accuracy(y_pred, y_batch)
                 print(f"Epoch {epoch}, Loss: {loss:.4f}, Accuracy: {acc:.4f}")
 
     def predict(self, X):
