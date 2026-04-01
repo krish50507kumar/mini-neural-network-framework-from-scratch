@@ -1,4 +1,5 @@
 import numpy as np
+from evaluation.metrics import accuracy
 class NeuralNetwork:
     def __init__(self, layers):
         self.layers = layers
@@ -27,7 +28,8 @@ class NeuralNetwork:
             # now we backpropagation the network and update every neuron weight and bias as per their loss
             self.backward(dZ)
             self.optimizer.step(self.layers)
-            print(f"Epoch {epoch}, Loss: {loss}")
+            acc = accuracy(y_pred, y)
+            print(f"Epoch {epoch}, Loss: {loss:.4f}, Accuracy: {acc:.4f}")
 
     def predict(self, X):
         return self.forward(X)
