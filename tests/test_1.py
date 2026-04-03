@@ -42,11 +42,13 @@ model.compile(
     optimizer=Adam(lr=0.05)
 )
 
-model.train(X_train, y_train, epochs=200, batch_size=32)
+model.compile(
+    loss=CategoricalCrossEntropy(),
+    optimizer=Adam(lr=0.01)
+)
 
-y_pred = model.predict(X_test)
-acc = accuracy(y_pred, y_test)
-print("Test Accuracy:", acc)
-# model.save("../Models/iris_model.pkl")
-# print(y_test)
-# print(y_pred)
+model.fit(X_train, y_train, epochs=200, batch_size=16, lambda_=0.001,verbose=False)
+model.evaluate(X_test, y_test)
+
+preds = model.predict(X_test)
+print(preds)

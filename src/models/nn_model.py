@@ -22,10 +22,12 @@ class NeuralNetwork:
         self.loss_fn = loss
         self.optimizer = optimizer
 
-    def train(self,X,y,epochs = 10,batch_size=32):
+    def fit(self,X,y,epochs = 10,batch_size=32,lambda_=0.001,verbose = True):
         n_samples = X.shape[0]
-        lambda_ = 0.001
         for epoch in range(epochs):
+            all_preds = []
+            all_true = []
+            total_loss = 0
             indices = np.random.permutation(n_samples)
             X = X[indices]
             y = y[indices]
@@ -36,13 +38,23 @@ class NeuralNetwork:
                 y_pred = self.forward(X_batch, training=True)
                 # I now compute the loss of last neuron cause previous layer neurons need it
                 loss = self.loss_fn.forward(y_pred,y_batch,lambda_=lambda_)
+                total_loss += loss
                 # now i compute the gradient of last neuron
                 dZ = self.loss_fn.backward(y_pred,y_batch)
                 # now we backpropagation the network and update every neuron weight and bias as per their loss
                 self.backward(dZ,lambda_)
                 self.optimizer.step(self.layers)
-                acc = accuracy(y_pred, y_batch)
-                print(f"Epoch {epoch}, Loss: {loss:.4f}, Accuracy: {acc:.4f}")
+                all_preds.append(y_pred)
+                all_true.append(y_batch)
+            y_pred_full = np.vstack(all_preds)
+            y_true_full = np.vstack(all_true)
+
+            epoch_acc = accuracy(y_pred_full, y_true_full)
+            batches = int(np.ceil(n_samples / batch_size))
+            epoch_loss = total_loss / batches
+
+            if verbose and epoch % 10 == 0:
+                print(f"Epoch {epoch}, Loss: {epoch_loss:.4f}, Accuracy: {epoch_acc:.4f}")
 
     def predict(self, X):
         return self.forward(X,training = True)
@@ -71,3 +83,11 @@ class NeuralNetwork:
                 layer.W = params[layer_idx]["W"]
                 layer.b = params[layer_idx]["b"]
                 layer_idx += 1
+
+    def evaluate(self, X, y):
+        y_pred = self.predict(X)
+        loss = self.loss_fn.forward(y_pred, y, self.layers, lambda_=0.0)
+        acc = accuracy(y_pred, y)
+
+        print(f"Loss: {loss:.4f}, Accuracy: {acc:.4f}")
+        return loss, acc

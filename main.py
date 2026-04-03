@@ -1,5 +1,6 @@
 from models.nn_model import NeuralNetwork
 from layers.dense import Dense
+from layers.dropout import Dropout
 from activations.relu import ReLU
 from activations.sigmoid import Sigmoid
 from activations.softmax import Softmax
@@ -28,21 +29,20 @@ y = np.array([
 layers = [
     Dense(2, 4),
     ReLU(),
+    Dropout(0.3),
     Dense(4, 2),
     Softmax()
 ]
 model = NeuralNetwork(layers)
+
 model.compile(
     loss=CategoricalCrossEntropy(),
-    optimizer=Adam(lr = 0.2)
+    optimizer=Adam(lr=0.1)
 )
-model.train(X,y,epochs=100)
-# print("Before:", layers[0].W[0][0])
-y_pred = model.predict(X)
-print(y_pred)
-# print("After:", layers[0].W[0][0])
-# print(accuracy(y_pred,y))
-# endpoint = "Models/"
-# path = "xor_model.pkl"
-# model.save(endpoint+path)
-# print("done")
+
+model.fit(X, y, epochs=200, batch_size=16, lambda_=0.001,verbose = False)
+
+model.evaluate(X, y)
+
+preds = model.predict(X)
+print(preds)
