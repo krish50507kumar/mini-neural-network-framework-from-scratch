@@ -9,7 +9,7 @@ from losses.cross_entropy import CategoricalCrossEntropy
 from evaluation.metrics import accuracy
 from optimizers.adam import Adam
 import numpy as np
-
+from layers.dropout import Dropout
 from sklearn.datasets import load_iris
 
 data = load_iris()
@@ -32,6 +32,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 model = NeuralNetwork([
     Dense(4, 8),
     ReLU(),
+    Dropout(0.5),
     Dense(8, 3),
     Softmax()
 ])

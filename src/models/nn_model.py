@@ -5,9 +5,13 @@ class NeuralNetwork:
     def __init__(self, layers):
         self.layers = layers
 
-    def forward(self, X):
+    def forward(self, X, training=True):
         for layer in self.layers:
-            X = layer.forward(X)
+            if hasattr(layer, "forward"):
+                if "Dropout" in layer.__class__.__name__:
+                    X = layer.forward(X, training)
+                else:
+                    X = layer.forward(X)
         return X
 
     def backward(self, dZ,lambda_ = 0.0):
@@ -29,7 +33,7 @@ class NeuralNetwork:
                 X_batch = X[i:i+batch_size]
                 y_batch = y[i:i+batch_size]
                 # I pushed the input_X or train_X through my neural network and predicted y_pred i,e output of last neuron
-                y_pred = self.forward(X_batch)
+                y_pred = self.forward(X_batch, training=True)
                 # I now compute the loss of last neuron cause previous layer neurons need it
                 loss = self.loss_fn.forward(y_pred,y_batch,lambda_=lambda_)
                 # now i compute the gradient of last neuron
@@ -41,7 +45,7 @@ class NeuralNetwork:
                 print(f"Epoch {epoch}, Loss: {loss:.4f}, Accuracy: {acc:.4f}")
 
     def predict(self, X):
-        return self.forward(X)
+        return self.forward(X,training = True)
 
     def save(self, path):
         params = []
