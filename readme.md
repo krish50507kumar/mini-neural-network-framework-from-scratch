@@ -1,7 +1,7 @@
 # 🧠 Mini Neural Network Framework (From Scratch)
 
 A lightweight deep learning framework built from scratch using NumPy.
-This project implements the full training pipeline — forward pass, backpropagation, optimization, and regularization — without relying on high-level libraries like TensorFlow or PyTorch.
+This project implements the full training pipeline —> forward pass, backpropagation, optimization, and regularization —> without relying on high-level libraries like TensorFlow or PyTorch.
 
 ---
 
